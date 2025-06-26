@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/accounts")  // Base URL for all account APIs
-@CrossOrigin                  // Allow JavaFX or browser calls (if needed)
+@RequestMapping("/accounts") // Base URL for all account APIs
+@CrossOrigin // Allow JavaFX or browser calls (if needed)
 public class AccountController {
 
     @Autowired
@@ -29,7 +29,7 @@ public class AccountController {
     public ResponseEntity<Account> getAccount(@PathVariable String id) {
         Optional<Account> found = accountService.getAccountById(id);
         return found.map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // DELETE /accounts/{id} → Soft delete (mark as Closed)
@@ -37,5 +37,12 @@ public class AccountController {
     public ResponseEntity<Void> closeAccount(@PathVariable String id) {
         accountService.closeAccount(id);
         return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Account> updateAccount(@PathVariable String id, @Valid @RequestBody Account updatedData) {
+        return accountService.updateAccount(id, updatedData)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
