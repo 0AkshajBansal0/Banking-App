@@ -12,33 +12,38 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class Account {
-
     @Id
-    private String accountId;  // Unique identifier for the account
+    private String accountId;  // Unique ID (UUID)
 
     @NotBlank(message = "Name is required")
-    private String accountHolderName;  // Full name of the account holder
+    private String accountHolderName;  // Customer's name
 
     @NotBlank(message = "Account type is required")
-    private String accountType;  // Type of account (Savings, Checking)
+    private String accountType;  // "Savings" / "Checking"
 
     @PositiveOrZero(message = "Balance cannot be negative")
-    private double balance;  // Initial or current balance in the account
+    private double balance;  // Initial balance (>= 0)
 
-    private LocalDate dateOfCreation;  // Date when the account was created (set during creation)
+    private LocalDate dateOfCreation;  // When account was created
 
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Email is required")
-    private String email;  // Email address of the account holder
+    @Email
+    @NotBlank
+    private String email;  // Valid email
 
-    @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^[0-9]{10}$", message = "Invalid Phone Number")
-    private String phoneNumber;  // 10-digit phone number of the customer
+    @NotBlank
+    @Pattern(regexp = "^[0-9]{10}$")
+    private String phoneNumber;  // 10-digit phone
 
-    @NotBlank(message = "IFSC code is required")
-    @Pattern(regexp = "^[A-Z]{4}0[A-Z0-9]{6}$", message = "Invalid IFSC format")
-    private String ifsc;  // Branch IFSC code (used for identifying bank branch)
+    @NotBlank
+    @Pattern(regexp = "^[A-Z]{4}0[A-Z0-9]{6}$")
+    private String ifsc;  // IFSC code format
 
-    @NotBlank(message = "Status is required")
-    private String status;  // Account status (Active, Closed, or Frozen)
+    @NotBlank
+    private String status;  // Active / Closed
+
+    @Transient
+    public String getAccountType() {
+        if (this instanceof SavingsAccount) return "Savings";
+        else return "Checking";
+    }
 }
