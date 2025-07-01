@@ -1,46 +1,122 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { createAccount } from "../api/accountApi";
+import api from "../api/axiosConfig";
+import { toast } from "react-toastify";
 
-const CreateAccount = () => {
-  const nav = useNavigate();
+export default function CreateAccount() {
   const [form, setForm] = useState({
-    accountHolderName: "", email: "", phoneNumber: "",
-    ifsc: "", balance: 0, accountType: "Savings"
+    accountHolderName: "",
+    email: "",
+    phoneNumber: "",
+    ifsc: "",
+    balance: "",
+    accountType: "Savings",
+    status: "Active", // ✅ required by backend
   });
 
-  const handle = () => {
-    createAccount({ ...form, status: "Active" })
-      .then(() => nav("/accounts"))
-      .catch(() => alert("Failed to create"));
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // ✅ Validation before submission
+    if (!/^[0-9]{10}$/.test(form.phoneNumber)) {
+      toast.error("Phone number must be 10 digits");
+      return;
+    }
+    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(form.ifsc)) {
+      toast.error("Invalid IFSC format");
+      return;
+    }
+
+    try {
+      const res = await api.post("/accounts", {
+        ...form,
+        balance: parseFloat(form.balance),
+      });
+      toast.success("Account created successfully!");
+      setForm({
+        accountHolderName: "",
+        email: "",
+        phoneNumber: "",
+        ifsc: "",
+        balance: "",
+        accountType: "Savings",
+        status: "Active",
+      });
+    } catch (err) {
+      toast.error("Account creation failed.");
+      console.error(err);
+    }
   };
 
   return (
-    <div className="max-w-lg mx-auto bg-white p-6 rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Create Account</h2>
-      {["accountHolderName", "email", "phoneNumber", "ifsc", "balance"].map((f) => (
-        <input key={f}
-          className="w-full border p-2 mb-3 rounded"
-          placeholder={f}
-          value={form[f]}
-          onChange={(e) => setForm({ ...form, [f]: e.target.value })}
-          type={f === "balance" ? "number" : "text"}
+    <div className="max-w-xl mx-auto p-6 bg-white rounded-md shadow mt-8">
+      <h2 className="text-2xl font-semibold mb-4 text-center">Create Account</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="text"
+          name="accountHolderName"
+          placeholder="Account Holder Name"
+          value={form.accountHolderName}
+          onChange={handleChange}
+          className="w-full border px-4 py-2 rounded"
+          required
         />
-      ))}
-      <select
-        className="w-full border p-2 mb-4 rounded"
-        value={form.accountType}
-        onChange={(e) => setForm({ ...form, accountType: e.target.value })}
-      >
-        <option>Savings</option>
-        <option>Checking</option>
-      </select>
-      <button onClick={handle}
-        className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-        Create
-      </button>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          className="w-full border px-4 py-2 rounded"
+          required
+        />
+        <input
+          type="text"
+          name="phoneNumber"
+          placeholder="Phone Number (10 digits)"
+          value={form.phoneNumber}
+          onChange={handleChange}
+          className="w-full border px-4 py-2 rounded"
+          required
+        />
+        <input
+          type="text"
+          name="ifsc"
+          placeholder="IFSC Code (e.g., ABCD0EFGH12)"
+          value={form.ifsc}
+          onChange={handleChange}
+          className="w-full border px-4 py-2 rounded"
+          required
+        />
+        <input
+          type="number"
+          name="balance"
+          placeholder="Initial Balance"
+          value={form.balance}
+          onChange={handleChange}
+          className="w-full border px-4 py-2 rounded"
+          required
+        />
+        <select
+          name="accountType"
+          value={form.accountType}
+          onChange={handleChange}
+          className="w-full border px-4 py-2 rounded"
+        >
+          <option value="Savings">Savings</option>
+          <option value="Checking">Checking</option>
+        </select>
+
+        <button
+          type="submit"
+          className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700 transition cursor-pointer"
+        >
+          Submit
+        </button>
+      </form>
     </div>
   );
-};
-
-export default CreateAccount;
+}

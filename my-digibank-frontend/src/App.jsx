@@ -1,29 +1,18 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Dashboard from "./pages/Dashboard";
-import AccountsPage from "./pages/AccountsPage";
-import CreateAccount from "./pages/CreateAccount";
-import LoginPage from "./pages/LoginPage";
+import { BrowserRouter } from "react-router-dom";
+import Navbar from "./components/Navbar.jsx";
+import AppRoutes from "./routes.jsx";
 
-import AccountDetails from "./pages/AccountDetails";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-
-const App = () => {
+export default function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Navbar />
-      <div className="p-6">
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/accounts" element={<AccountsPage />} />
-          <Route path="/accounts/:accountId" element={<AccountDetails />} />  {/* NEW */}
-          <Route path="/create" element={<CreateAccount />} />
-          <Route path="/login" element={<LoginPage />} />
-        </Routes>
-      </div>
-    </Router>
+      <main className="p-4 bg-gray-100 min-h-screen">
+        <AppRoutes />
+      </main>
+      <ToastContainer />
+    </BrowserRouter>
   );
-};
-
-export default App;
+}

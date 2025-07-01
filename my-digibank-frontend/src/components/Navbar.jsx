@@ -1,16 +1,26 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-const Navbar = () => (
-  <nav className="bg-blue-700 text-white px-6 py-4 shadow-md sticky top-0 z-50">
-    <div className="flex justify-between items-center max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold">💳 My DigiBank</h1>
-      <ul className="flex gap-6">
-        <li><Link to="/">Dashboard</Link></li>
-        <li><Link to="/accounts">Accounts</Link></li>
-        <li><Link to="/create">Create</Link></li>
-      </ul>
-    </div>
-  </nav>
-);
+const link =
+  "hover:text-yellow-300 transition cursor-pointer px-2 py-1 rounded";
 
-export default Navbar;
+export default function Navbar() {
+  return (
+    <nav className="bg-blue-800 text-white flex gap-4 items-center px-4 py-3">
+      <h1 className="font-bold text-lg mr-4">My DigiBank</h1>
+
+      <NavLink to="/dashboard" className={link}>
+        Dashboard
+      </NavLink>
+      <NavLink to="/accounts" className={link}>
+        Accounts
+      </NavLink>
+      <NavLink to="/accounts/create" className={link}>
+        New&nbsp;Account
+      </NavLink>
+      <NavLink to="/transactions/new" className={link}>
+        New&nbsp;Txn
+      </NavLink>
+      <NavLink to="/accounts/types" className={link}>Types</NavLink>
+    </nav>
+  );
+}
