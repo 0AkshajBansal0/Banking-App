@@ -1,18 +1,57 @@
-import { BrowserRouter } from "react-router-dom";
-import Navbar from "./components/Navbar.jsx";
-import AppRoutes from "./routes.jsx";
-
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import AuthProvider from "./context/AuthContext";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Accounts from "./pages/Accounts";
+import NewAccount from "./pages/NewAccount";
+import AccountDetails from "./pages/AccountDetails";
+import Transactions from "./pages/Transactions";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <AuthProvider>
       <Navbar />
-      <main className="p-4 bg-gray-100 min-h-screen">
-        <AppRoutes />
-      </main>
-      <ToastContainer />
-    </BrowserRouter>
+      <div className="max-w-5xl mx-auto p-4">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/accounts"
+            element={
+              <ProtectedRoute>
+                <Accounts />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/accounts/new"
+            element={
+              <ProtectedRoute>
+                <NewAccount />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/accounts/:id"
+            element={
+              <ProtectedRoute>
+                <AccountDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/accounts/:id/transactions"
+            element={
+              <ProtectedRoute>
+                <Transactions />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Login />} />
+        </Routes>
+      </div>
+    </AuthProvider>
   );
 }

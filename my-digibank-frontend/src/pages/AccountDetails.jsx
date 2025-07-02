@@ -1,135 +1,84 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import api from "../api/axiosConfig";
-import { toast } from "react-toastify";
+import api from "../services/api";
 
 export default function AccountDetails() {
   const { id } = useParams();
-  const nav = useNavigate();
-
+  const navigate = useNavigate();
   const [account, setAccount] = useState(null);
-  const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({ email: "", phoneNumber: "" });
+  const [form, setForm] = useState({ amount: 0, currency: "INR", description: "" });
+  const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await api.get(`/accounts/${id}`);
-        setAccount(res.data);
-        setForm({ email: res.data.email, phoneNumber: res.data.phoneNumber });
-      } catch (err) {
-        console.error("Failed to fetch account", err);
-        toast.error("Failed to load account details");
-      }
-    };
+  const fetchAccount = async () => {
+    const res = await api.get(`/accounts/${id}`);
+    setAccount(res.data);
+  };
 
-    fetchData();
-  }, [id]);
-  
-  const save = async () => {
+  useEffect(() => { fetchAccount(); }, [id]);
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleTransaction = async (type) => {
     try {
-      await api.put(`/accounts/${id}`, { ...account, ...form });
-      toast.success("Contact info updated");
-      setEditing(false);
-      // Reload updated details
-      const res = await api.get(`/accounts/${id}`);
-      setAccount(res.data);
+      await api.post(`/accounts/${id}/${type}`, form);
+      setMessage(`${type} successful`);
+      setForm({ amount: 0, currency: "INR", description: "" });
+      fetchAccount();
     } catch {
-      toast.error("Update failed");
+      setMessage(`${type} failed`);
     }
   };
 
-  const closeAcc = async () => {
-    if (!window.confirm("Close account?")) return;
+  const handleClose = async () => {
     await api.delete(`/accounts/${id}`);
-    toast.success("Account closed");
-    nav("/accounts");
+    navigate("/accounts");
   };
 
-  if (!account) return <p className="p-6">Loading…</p>;
+  if (!account) return <p>Loading...</p>;
 
   return (
-    <div className="p-6 space-y-4">
-      <h2 className="text-2xl font-semibold">Account Details</h2>
-
-      <div className="bg-white p-4 rounded shadow space-y-2">
-        <div><strong>Name:</strong> {account.accountHolderName}</div>
-        <div><strong>Type:</strong> {account.accountType}</div>
-        <div><strong>Balance:</strong> ₹{account.balance.toFixed(2)}</div>
-        <div><strong>Status:</strong> {account.status}</div>
-
-        {/* Editable */}
-        <div>
-          <strong>Email:</strong>{" "}
-          {editing ? (
-            <input
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="border p-1 rounded"
-            />
-          ) : (
-            account.email
-          )}
-        </div>
-        <div>
-          <strong>Phone:</strong>{" "}
-          {editing ? (
-            <input
-              value={form.phoneNumber}
-              onChange={(e) =>
-                setForm({ ...form, phoneNumber: e.target.value })
-              }
-              className="border p-1 rounded"
-            />
-          ) : (
-            account.phoneNumber
-          )}
-        </div>
+    <div>
+      <h2 className="text-xl font-semibold mb-2">{account.accountHolderName}</h2>
+      <p className="mb-2">Balance: ₹ {account.balance.toFixed(2)}</p>
+      <p className="mb-4">Status: {account.status}</p>
+      <div className="flex gap-2 mb-4">
+        <button onClick={handleClose} className="bg-red-600 text-white px-4 py-1 rounded">Close Account</button>
+        <Link to={`/accounts/${id}/transactions`} className="bg-gray-600 text-white px-4 py-1 rounded">Transactions</Link>
       </div>
 
-      <div className="flex gap-3">
-        {editing ? (
-          <>
-            <button
-              onClick={save}
-              className="bg-green-600 text-white px-4 py-1 rounded cursor-pointer"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => setEditing(false)}
-              className="bg-gray-500 text-white px-4 py-1 rounded cursor-pointer"
-            >
-              Cancel
-            </button>
-          </>
-        ) : (
-          <>
-            <button
-              onClick={() => setEditing(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded cursor-pointer"
-            >
-              Edit
-            </button>
-            <button
-              onClick={closeAcc}
-              disabled={account.status !== "Active"}
-              className={`px-4 py-1 rounded text-white ${account.status === "Active"
-                  ? "bg-red-600 hover:bg-red-700 cursor-pointer"
-                  : "bg-gray-400 cursor-not-allowed"
-                }`}
-            >
-              Close
-            </button>
-          </>
-        )}
-
-        <Link
-          to={`/accounts/${id}/transactions`}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-1 rounded cursor-pointer"
+      <h3 className="font-semibold mb-2">Debit / Credit</h3>
+      {message && <p className="mb-2">{message}</p>}
+      <div className="space-y-2">
+        <input
+          type="number"
+          name="amount"
+          placeholder="Amount"
+          value={form.amount}
+          onChange={handleChange}
+          className="border p-2 rounded w-full"
+        />
+        <select
+          name="currency"
+          value={form.currency}
+          onChange={handleChange}
+          className="border p-2 rounded w-full"
         >
-          Transactions
-        </Link>
+          {["INR", "USD", "EUR"].map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+        <input
+          type="text"
+          name="description"
+          placeholder="Description"
+          value={form.description}
+          onChange={handleChange}
+          className="border p-2 rounded w-full"
+        />
+        <div className="flex gap-2">
+          <button onClick={() => handleTransaction("debit")} className="flex-1 bg-yellow-500 text-white py-2 rounded">Debit</button>
+          <button onClick={() => handleTransaction("credit")} className="flex-1 bg-green-600 text-white py-2 rounded">Credit</button>
+        </div>
       </div>
     </div>
   );
