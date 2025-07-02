@@ -11,41 +11,64 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 public class TransactionService {
 
     @Autowired
-    private TransactionRepository transactionRepo;
+    private TransactionRepository transactionRepository;
 
     @Autowired
-    private AccountRepository accountRepo;
+    private AccountRepository accountRepository;
 
     public Optional<Transaction> recordTransaction(Transaction transaction) {
-        Optional<Account> accountOpt = accountRepo.findById(transaction.getAccountId());
 
-        if (accountOpt.isEmpty()) return Optional.empty();
+        if (transaction.getAmount() <= 0) return Optional.empty();
 
-        Account account = accountOpt.get();
+        Optional<Account> accountOptional = accountRepository.findById(transaction.getAccountId());
+        if (accountOptional.isEmpty()) return Optional.empty();
+
+        Account account = accountOptional.get();
+
+        if (!"Active".equalsIgnoreCase(account.getStatus())) return Optional.empty();
+
         double amount = transaction.getAmount();
 
-        if (transaction.getTransactionType().equalsIgnoreCase("Debit")) {
-            if (account.getBalance() < amount) return Optional.empty(); // only for debit
-            account.setBalance(account.getBalance() - amount);
-        } else if (transaction.getTransactionType().equalsIgnoreCase("Credit")) {
-            account.setBalance(account.getBalance() + amount); // credit = add, no check
-        } else {
-            return Optional.empty(); // unknown type
+        switch (transaction.getTransactionType()) {
+            case "Debit" -> {
+                if (account.getBalance() < amount) return Optional.empty();
+                account.setBalance(account.getBalance() - amount);
+            }
+            case "Credit" -> account.setBalance(account.getBalance() + amount);
+            default -> { return Optional.empty(); }
         }
 
-        accountRepo.save(account);
+        accountRepository.save(account);
+
         transaction.setTransactionId(UUID.randomUUID().toString());
         transaction.setDateOfTransaction(LocalDate.now());
-        Transaction saved = transactionRepo.save(transaction);
-        return Optional.of(saved);
+
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        return Optional.of(savedTransaction);
     }
 
-    public List<Transaction> getTransactionsForAccount(String accountId) {
-        return transactionRepo.findByAccountId(accountId);
+    public List<Transaction> getTransactionsForAccount(
+            String accountId,
+            String transactionType,
+            Double minAmount,
+            Double maxAmount,
+            LocalDate fromDate,
+            LocalDate toDate) {
+
+        Stream<Transaction> stream = transactionRepository.findByAccountId(accountId).stream();
+
+        if (transactionType != null) stream = stream.filter(t -> t.getTransactionType().equalsIgnoreCase(transactionType));
+        if (minAmount != null) stream = stream.filter(t -> t.getAmount() >= minAmount);
+        if (maxAmount != null) stream = stream.filter(t -> t.getAmount() <= maxAmount);
+        if (fromDate != null) stream = stream.filter(t -> !t.getDateOfTransaction().isBefore(fromDate));
+        if (toDate != null) stream = stream.filter(t -> !t.getDateOfTransaction().isAfter(toDate));
+
+        return stream.toList();
     }
 }
