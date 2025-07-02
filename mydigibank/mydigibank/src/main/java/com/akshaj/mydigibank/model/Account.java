@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class Account {
+    
     @Id
     private String accountId;  // Unique ID (UUID)
 
@@ -39,11 +40,6 @@ public class Account {
     private String ifsc;  // IFSC code format
 
     @NotBlank
-    private String status;  // Active / Closed
+    private String status;  // Active / Closed / Frozen
 
-    @Transient
-    public String getAccountType() {
-        if (this instanceof SavingsAccount) return "Savings";
-        else return "Checking";
-    }
 }
