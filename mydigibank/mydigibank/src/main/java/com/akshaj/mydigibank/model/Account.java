@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class Account {
-    
+
     @Id
     private String accountId;  // Unique ID (UUID)
 

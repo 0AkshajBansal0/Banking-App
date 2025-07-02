@@ -39,5 +39,4 @@ public class AuthController {
         authService.createUser(req.getUsername(), req.getPassword());
         return ResponseEntity.ok("Signup successful");
     }
-
 }
