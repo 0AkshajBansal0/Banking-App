@@ -3,6 +3,7 @@ package com.akshaj.mydigibank.controller;
 import com.akshaj.mydigibank.dto.DebitCreditDTO;
 import com.akshaj.mydigibank.model.Transaction;
 import com.akshaj.mydigibank.service.TransactionService;
+import com.akshaj.mydigibank.service.CurrencyConverterService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +19,24 @@ public class AccountOperationController {
     @Autowired
     private TransactionService transactionService;
 
+    @Autowired
+    private CurrencyConverterService currencyConverterService;
+
     @PostMapping("/{accountId}/debit")
     public ResponseEntity<?> debit(@PathVariable String accountId,
                                    @Valid @RequestBody DebitCreditDTO request) {
 
-        Transaction tx = Transaction.builder()
+        double convertedAmount = currencyConverterService.convert(
+                request.getCurrency(), "INR", request.getAmount());
+
+        Transaction transaction = Transaction.builder()
                 .accountId(accountId)
                 .transactionType("Debit")
-                .amount(request.getAmount())
-                .description(request.getDescription())
+                .amount(convertedAmount)
+                .description(request.getDescription() + " (" + request.getAmount() + " " + request.getCurrency() + ")")
                 .build();
 
-        Optional<Transaction> result = transactionService.recordTransaction(tx);
+        Optional<Transaction> result = transactionService.recordTransaction(transaction);
         return result.<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().body("Transaction failed"));
     }
@@ -38,14 +45,17 @@ public class AccountOperationController {
     public ResponseEntity<?> credit(@PathVariable String accountId,
                                     @Valid @RequestBody DebitCreditDTO request) {
 
-        Transaction tx = Transaction.builder()
+        double convertedAmount = currencyConverterService.convert(
+                request.getCurrency(), "INR", request.getAmount());
+
+        Transaction transaction = Transaction.builder()
                 .accountId(accountId)
                 .transactionType("Credit")
-                .amount(request.getAmount())
-                .description(request.getDescription())
+                .amount(convertedAmount)
+                .description(request.getDescription() + " (" + request.getAmount() + " " + request.getCurrency() + ")")
                 .build();
 
-        Optional<Transaction> result = transactionService.recordTransaction(tx);
+        Optional<Transaction> result = transactionService.recordTransaction(transaction);
         return result.<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().body("Transaction failed"));
     }

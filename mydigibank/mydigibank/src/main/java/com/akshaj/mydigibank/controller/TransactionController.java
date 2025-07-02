@@ -13,31 +13,32 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/transactions")
 @CrossOrigin
 public class TransactionController {
 
     @Autowired
     private TransactionService transactionService;
 
-    @PostMapping
+    @PostMapping("/transactions")
     public ResponseEntity<?> recordTransaction(@Valid @RequestBody Transaction transactionRequest) {
-        Optional<Transaction> savedTransaction = transactionService.recordTransaction(transactionRequest);
-
-        return savedTransaction.<ResponseEntity<?>>map(ResponseEntity::ok)
+        Optional<Transaction> saved = transactionService.recordTransaction(transactionRequest);
+        return saved.<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().body("Transaction failed"));
     }
 
-    @GetMapping("/account/{accountId}")
-    public ResponseEntity<List<Transaction>> getTransactions(
+    @GetMapping("/accounts/{accountId}/transactions")
+    public ResponseEntity<List<Transaction>> getAccountTransactions(
             @PathVariable String accountId,
             @RequestParam(required = false) String type,
-            @RequestParam(required = false) Double min,
-            @RequestParam(required = false) Double max,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+            @RequestParam(required = false) Double minAmount,
+            @RequestParam(required = false) Double maxAmount,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
 
-        List<Transaction> transactions = transactionService.getTransactionsForAccount(accountId, type, min, max, from, to);
-        return ResponseEntity.ok(transactions);
+        List<Transaction> list = transactionService.getTransactionsForAccount(
+                accountId, type, minAmount, maxAmount, fromDate, toDate);
+        return ResponseEntity.ok(list);
     }
 }
