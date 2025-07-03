@@ -20,7 +20,7 @@ public class Account {
     private String accountHolderName;  // Customer's name
 
     @NotBlank(message = "Account type is required")
-    private String accountType;  // "Savings" / "Checking"
+    private String accountType;  // Savings / Checking
 
     @PositiveOrZero(message = "Balance cannot be negative")
     private double balance;  // Initial balance (>= 0)
@@ -40,6 +40,6 @@ public class Account {
     private String ifsc;  // IFSC code format
 
     @NotBlank
-    private String status;  // Active / Closed / Frozen
+    private String status;  // Active / Closed
 
 }

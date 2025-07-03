@@ -14,6 +14,12 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @Data
+    private static class LoginRequest {
+        private String username;
+        private String password;
+    }
+
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest req) {
         boolean ok = authService.authenticate(req.getUsername(), req.getPassword());
@@ -21,12 +27,6 @@ public class AuthController {
             return ResponseEntity.ok("Login successful");
         else
             return ResponseEntity.status(401).body("Invalid credentials");
-    }
-
-    @Data
-    private static class LoginRequest {
-        private String username;
-        private String password;
     }
 
     @PostMapping("/signup")

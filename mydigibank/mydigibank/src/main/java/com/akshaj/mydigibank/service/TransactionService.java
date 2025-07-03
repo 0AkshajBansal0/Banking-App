@@ -23,18 +23,15 @@ public class TransactionService {
     private AccountRepository accountRepository;
 
     public Optional<Transaction> recordTransaction(Transaction transaction) {
-
         if (transaction.getAmount() <= 0) return Optional.empty();
-
+        
         Optional<Account> accountOptional = accountRepository.findById(transaction.getAccountId());
         if (accountOptional.isEmpty()) return Optional.empty();
 
         Account account = accountOptional.get();
-
         if (!"Active".equalsIgnoreCase(account.getStatus())) return Optional.empty();
 
         double amount = transaction.getAmount();
-
         switch (transaction.getTransactionType()) {
             case "Debit" -> {
                 if (account.getBalance() < amount) return Optional.empty();
