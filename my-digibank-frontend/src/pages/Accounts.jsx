@@ -18,7 +18,8 @@ export default function Accounts() {
     setAccounts(res.data);
   };
 
-  /* reload whenever filter changes */
+
+  //to reload the accounts when filters change
   useEffect(() => {
     load();
   }, [filters]);
