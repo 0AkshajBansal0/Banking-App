@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../services/api";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 export default function Transactions() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const [rows, setRows] = useState([]);
   const [filters, setFilters] = useState({
@@ -48,30 +50,33 @@ export default function Transactions() {
 
   const summary =
     filters.fromDate || filters.toDate
-      ? `Showing ${filters.fromDate || "start"} → ${filters.toDate || "today"}`
+      ? t("showingRange", {
+        from: filters.fromDate || t("start"),
+        to: filters.toDate || t("today"),
+      })
       : "";
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-4">Transactions</h2>
+      <h2 className="text-2xl font-semibold mb-4">{t("transactions")}</h2>
 
       {/* Filter Section */}
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6 text-sm">
         <div>
-          <label className="block mb-1 font-medium">Type</label>
+          <label className="block mb-1 font-medium">{t("type")}</label>
           <select
             value={filters.type}
             onChange={(e) => setFilters({ ...filters, type: e.target.value })}
             className="w-full border px-2 py-1.5 rounded text-sm"
           >
-            <option value="">All</option>
-            <option>Debit</option>
-            <option>Credit</option>
+            <option value="">{t("all")}</option>
+            <option>{t("debit")}</option>
+            <option>{t("credit")}</option>
           </select>
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Min Amount</label>
+          <label className="block mb-1 font-medium">{t("minAmount")}</label>
           <input
             type="number"
             value={filters.minAmount}
@@ -83,7 +88,7 @@ export default function Transactions() {
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Max Amount</label>
+          <label className="block mb-1 font-medium">{t("maxAmount")}</label>
           <input
             type="number"
             value={filters.maxAmount}
@@ -97,7 +102,7 @@ export default function Transactions() {
         {/* From & To Date in same row */}
         <div className="col-span-full flex gap-4 flex-wrap">
           <div className="flex flex-col">
-            <label className="mb-1 font-medium">From</label>
+            <label className="mb-1 font-medium">{t("from")}</label>
             <input
               type="date"
               value={filters.fromDate}
@@ -108,7 +113,7 @@ export default function Transactions() {
             />
           </div>
           <div className="flex flex-col">
-            <label className="mb-1 font-medium">To</label>
+            <label className="mb-1 font-medium">{t("to")}</label>
             <input
               type="date"
               value={filters.toDate}
@@ -125,13 +130,13 @@ export default function Transactions() {
               onClick={() => quick("month")}
               className="bg-blue-100 hover:bg-blue-200 text-blue-800 px-3 py-1.5 rounded"
             >
-              This Month
+              {t("thisMonth")}
             </button>
             <button
               onClick={() => quick("year")}
               className="bg-blue-100 hover:bg-blue-200 text-blue-800 px-3 py-1.5 rounded"
             >
-              This Year
+              {t("thisYear")}
             </button>
             <button
               onClick={() =>
@@ -139,12 +144,11 @@ export default function Transactions() {
               }
               className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1.5 rounded"
             >
-              Clear
+              {t("clear")}
             </button>
           </div>
         </div>
       </div>
-
 
       {summary && (
         <p className="text-sm text-gray-600 mb-4 italic">{summary}</p>
@@ -153,7 +157,7 @@ export default function Transactions() {
       {/* Transaction Cards */}
       <div className="grid gap-4">
         {rows.length === 0 && (
-          <p className="text-gray-500 italic">No transactions found.</p>
+          <p className="text-gray-500 italic">{t("noTransactions")}</p>
         )}
 
         {rows.map((t) => (
@@ -163,8 +167,10 @@ export default function Transactions() {
           >
             <div>
               <p className="text-sm text-gray-500">
-                {t.dateOfTransaction}
+                {dayjs(t.dateOfTransaction).format("DD MMM YYYY")},{" "}
+                {t.timeOfTransaction?.slice(0, 5)}
               </p>
+
               <p className="text-lg font-medium">{t.description}</p>
               <p className="text-sm text-gray-600">{t.transactionType}</p>
             </div>

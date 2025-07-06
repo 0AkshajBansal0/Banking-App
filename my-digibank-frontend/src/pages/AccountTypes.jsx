@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import api from "../services/api";
 
 export default function AccountTypes() {
+  const { t } = useTranslation();
   const [types, setTypes] = useState([]);
 
   useEffect(() => {
@@ -19,31 +21,31 @@ export default function AccountTypes() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Account Types</h2>
+      <h2 className="text-2xl font-bold mb-6">{t("accountTypesTitle")}</h2>
 
       {types.length === 0 ? (
-        <p>No account types found.</p>
+        <p>{t("noAccountTypesFound")}</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full border text-sm bg-white rounded">
             <thead className="bg-gray-100">
               <tr>
-                <th className="text-left p-3 border">Type</th>
-                <th className="text-left p-3 border">Interest Rate</th>
-                <th className="text-left p-3 border">Overdraft Limit</th>
+                <th className="text-left p-3 border">{t("type")}</th>
+                <th className="text-left p-3 border">{t("interestRate")}</th>
+                <th className="text-left p-3 border">{t("overdraftLimit")}</th>
               </tr>
             </thead>
             <tbody>
-              {types.map((t, i) => (
+              {types.map((type, i) => (
                 <tr key={i}>
-                  <td className="p-3 border">{t.type}</td>
+                  <td className="p-3 border">{type.type}</td>
                   <td className="p-3 border">
-                    {t.interestRate ? `${t.interestRate}%` : "N/A"}
+                    {type.interestRate ? `${type.interestRate}%` : t("na")}
                   </td>
                   <td className="p-3 border">
-                    {t.overdraftLimit
-                      ? `₹${t.overdraftLimit.toLocaleString()}`
-                      : "N/A"}
+                    {type.overdraftLimit
+                      ? `₹${type.overdraftLimit.toLocaleString()}`
+                      : t("na")}
                   </td>
                 </tr>
               ))}

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Data
@@ -26,6 +27,8 @@ public class Transaction {
     private double amount;
 
     private LocalDate dateOfTransaction;
+    @Column(name = "time_of_transaction")
+    private LocalTime timeOfTransaction;
 
     @NotBlank(message = "Description is required")
     private String description;

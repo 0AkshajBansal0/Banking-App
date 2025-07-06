@@ -3,8 +3,10 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Signup() {
+  const { t } = useTranslation();
   const { signup } = useContext(AuthContext);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -12,23 +14,23 @@ export default function Signup() {
 
   const schema = Yup.object({
     username: Yup.string()
-      .min(4, "Username must be at least 4 characters")
-      .required("Username is required"),
+      .min(4, t("usernameMin"))
+      .required(t("usernameRequired")),
     password: Yup.string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Password is required"),
+      .min(6, t("passwordMin"))
+      .required(t("passwordRequired")),
     confirm: Yup.string()
-      .oneOf([Yup.ref("password")], "Passwords do not match")
-      .required("Please confirm your password"),
+      .oneOf([Yup.ref("password")], t("passwordMismatch"))
+      .required(t("confirmRequired")),
   });
 
   const handleSubmit = async (values, { setSubmitting, setStatus }) => {
     try {
       await signup(values.username, values.password);
-      setStatus("Signup success! Redirecting to login...");
+      setStatus(t("signupSuccessRedirect"));
       setTimeout(() => navigate("/login"), 1000);
     } catch {
-      setStatus("Username already exists");
+      setStatus(t("usernameExists"));
     } finally {
       setSubmitting(false);
     }
@@ -38,7 +40,7 @@ export default function Signup() {
     <div className="flex justify-center items-center min-h-[calc(100vh-64px)] bg-white">
       <div className="w-full max-w-md bg-white p-6 rounded-lg shadow border">
         <h1 className="text-2xl font-semibold text-center text-blue-800 mb-4">
-          Create an Account
+          {t("createAccount")}
         </h1>
 
         <Formik
@@ -62,11 +64,11 @@ export default function Signup() {
 
               <div>
                 <label className="block text-sm text-gray-700 mb-1">
-                  Username
+                  {t("username")}
                 </label>
                 <Field
                   name="username"
-                  placeholder="Enter username"
+                  placeholder={t("usernamePlaceholder")}
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <ErrorMessage
@@ -78,13 +80,13 @@ export default function Signup() {
 
               <div>
                 <label className="block text-sm text-gray-700 mb-1">
-                  Password
+                  {t("password")}
                 </label>
                 <div className="relative">
                   <Field
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    placeholder="Enter password"
+                    placeholder={t("passwordPlaceholder")}
                     className="w-full px-3 py-2 border border-gray-300 rounded pr-14 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <button
@@ -92,7 +94,7 @@ export default function Signup() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-2 top-2 text-sm text-blue-600 hover:text-blue-800"
                   >
-                    {showPassword ? "Hide" : "Show"}
+                    {showPassword ? t("hide") : t("show")}
                   </button>
                 </div>
                 <ErrorMessage
@@ -104,13 +106,13 @@ export default function Signup() {
 
               <div>
                 <label className="block text-sm text-gray-700 mb-1">
-                  Confirm Password
+                  {t("confirmPassword")}
                 </label>
                 <div className="relative">
                   <Field
                     type={showConfirm ? "text" : "password"}
                     name="confirm"
-                    placeholder="Re-enter password"
+                    placeholder={t("confirmPasswordPlaceholder")}
                     className="w-full px-3 py-2 border border-gray-300 rounded pr-14 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <button
@@ -118,7 +120,7 @@ export default function Signup() {
                     onClick={() => setShowConfirm(!showConfirm)}
                     className="absolute right-2 top-2 text-sm text-blue-600 hover:text-blue-800"
                   >
-                    {showConfirm ? "Hide" : "Show"}
+                    {showConfirm ? t("hide") : t("show")}
                   </button>
                 </div>
                 <ErrorMessage
@@ -133,13 +135,13 @@ export default function Signup() {
                 disabled={isSubmitting}
                 className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
               >
-                {isSubmitting ? "Signing up..." : "Sign Up"}
+                {isSubmitting ? t("signingUp") : t("signUp")}
               </button>
 
               <p className="text-sm text-center text-gray-600">
-                Already have an account?{" "}
+                {t("alreadyHaveAccount")}{" "}
                 <Link to="/login" className="text-blue-600 hover:underline">
-                  Login
+                  {t("login")}
                 </Link>
               </p>
             </Form>

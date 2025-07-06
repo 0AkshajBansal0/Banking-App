@@ -1,28 +1,33 @@
-// src/App.jsx
+import "./i18n";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
 import AuthProvider from "./context/AuthContext";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Accounts from "./pages/Accounts";
 import NewAccount from "./pages/NewAccount";
 import AccountDetails from "./pages/AccountDetails";
-import AccountEdit from "./pages/AccountEdit";      // ← NEW
+import AccountEdit from "./pages/AccountEdit";
 import Transactions from "./pages/Transactions";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AccountTypes from "./pages/AccountTypes";
 
+import { LanguageProvider } from "./context/LanguageContext";
+
 export default function App() {
   return (
+    <LanguageProvider>
+      
     <AuthProvider>
       <Navbar />
       <div className="max-w-5xl mx-auto p-4">
         <Routes>
-          {/* public routes */}
+
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 
-          {/* protected routes */}
           <Route
             path="/accounts"
             element={
@@ -30,7 +35,7 @@ export default function App() {
                 <Accounts />
               </ProtectedRoute>
             }
-          />
+            />
           <Route
             path="/accounts/new"
             element={
@@ -38,7 +43,7 @@ export default function App() {
                 <NewAccount />
               </ProtectedRoute>
             }
-          />
+            />
           <Route
             path="/accounts/:id"
             element={
@@ -46,7 +51,7 @@ export default function App() {
                 <AccountDetails />
               </ProtectedRoute>
             }
-          />
+            />
           <Route
             path="/account-types"
             element={
@@ -54,7 +59,7 @@ export default function App() {
                 <AccountTypes />
               </ProtectedRoute>
             }
-          />
+            />
           <Route
             path="/accounts/:id/edit"
             element={
@@ -62,7 +67,7 @@ export default function App() {
                 <AccountEdit />
               </ProtectedRoute>
             }
-          />
+            />
           <Route
             path="/accounts/:id/transactions"
             element={
@@ -70,12 +75,13 @@ export default function App() {
                 <Transactions />
               </ProtectedRoute>
             }
-          />
+            />
 
-          {/* fallback */}
-          <Route path="*" element={<Login />} />
+
+          <Route path="*" element={<Home />} />
         </Routes>
       </div>
     </AuthProvider>
+            </LanguageProvider>
   );
 }

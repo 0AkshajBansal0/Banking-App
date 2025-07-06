@@ -3,15 +3,17 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
+  const { t } = useTranslation();
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const schema = Yup.object({
-    username: Yup.string().required("Username is required"),
-    password: Yup.string().required("Password is required"),
+    username: Yup.string().required(t("usernameRequired")),
+    password: Yup.string().required(t("passwordRequired")),
   });
 
   const handleSubmit = async (values, { setSubmitting, setStatus }) => {
@@ -19,7 +21,7 @@ export default function Login() {
       await login(values.username, values.password);
       navigate("/accounts");
     } catch {
-      setStatus("Invalid credentials. Please try again.");
+      setStatus(t("invalidCredentials"));
     } finally {
       setSubmitting(false);
     }
@@ -29,7 +31,7 @@ export default function Login() {
     <div className="flex justify-center items-center min-h-[calc(100vh-64px)] bg-white">
       <div className="w-full max-w-md bg-white p-6 rounded-lg shadow border">
         <h1 className="text-2xl font-semibold text-center text-blue-800 mb-4">
-          My DigiBank
+          {t("myDigiBank")}
         </h1>
 
         <Formik
@@ -45,11 +47,11 @@ export default function Login() {
 
               <div>
                 <label className="block text-sm text-gray-700 mb-1">
-                  Username
+                  {t("username")}
                 </label>
                 <Field
                   name="username"
-                  placeholder="Enter your username"
+                  placeholder={t("usernamePlaceholder")}
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <ErrorMessage
@@ -61,13 +63,13 @@ export default function Login() {
 
               <div>
                 <label className="block text-sm text-gray-700 mb-1">
-                  Password
+                  {t("password")}
                 </label>
                 <div className="relative">
                   <Field
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    placeholder="Enter your password"
+                    placeholder={t("passwordPlaceholder")}
                     className="w-full px-3 py-2 border border-gray-300 rounded pr-14 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <button
@@ -75,7 +77,7 @@ export default function Login() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-2 top-2 text-sm text-blue-600 hover:text-blue-800"
                   >
-                    {showPassword ? "Hide" : "Show"}
+                    {showPassword ? t("hide") : t("show")}
                   </button>
                 </div>
                 <ErrorMessage
@@ -90,13 +92,13 @@ export default function Login() {
                 disabled={isSubmitting}
                 className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
               >
-                {isSubmitting ? "Logging in..." : "Login"}
+                {isSubmitting ? t("loggingIn") : t("login")}
               </button>
 
               <p className="text-sm text-center text-gray-600">
-                Don’t have an account?{" "}
+                {t("noAccount")}{" "}
                 <Link to="/signup" className="text-blue-600 hover:underline">
-                  Sign up here
+                  {t("signupHere")}
                 </Link>
               </p>
             </Form>
