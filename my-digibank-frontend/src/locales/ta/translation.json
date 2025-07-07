@@ -166,5 +166,7 @@
   "Clean UI & Filters": "தூய UI மற்றும் வடிகட்டிகள்",
   "Filter transactions by type, amount and date easily.": "வகை, தொகை மற்றும் தேதியின் அடிப்படையில் பரிவர்த்தனைகளை எளிதாக வடிகட்டவும்.",
   "Fully Responsive": "முழுமையாக பதிலளிக்கக்கூடியது",
-  "Access your account across devices with smooth UX.": "மென்மையான UX உடன் உங்கள் கணக்கை அனைத்து சாதனங்களிலும் அணுகவும்."
+  "Access your account across devices with smooth UX.": "மென்மையான UX உடன் உங்கள் கணக்கை அனைத்து சாதனங்களிலும் அணுகவும்.",
+  "signUp": "பதிவு செய்யவும்",
+  "alreadyHaveAccount": "ஏற்கனவே கணக்கு உள்ளதா?"
 }

@@ -166,5 +166,7 @@
   "Clean UI & Filters": "ಸ್ವಚ್ಛ UI ಮತ್ತು ಫಿಲ್ಟರ್‌ಗಳು",
   "Filter transactions by type, amount and date easily.": "ಪ್ರಕಾರ, ಮೊತ್ತ ಮತ್ತು ದಿನಾಂಕದ ಪ್ರಕಾರ ವ್ಯವಹಾರಗಳನ್ನು ಸುಲಭವಾಗಿ ಫಿಲ್ಟರ್ ಮಾಡಿ.",
   "Fully Responsive": "ಪೂರ್ಣವಾಗಿ ಪ್ರತಿಕ್ರಿಯಿಸುವದು",
-  "Access your account across devices with smooth UX.": "ಸರಳ UX ನೊಂದಿಗೆ ನಿಮ್ಮ ಖಾತೆಗಳಿಗೆ ಎಲ್ಲಾ ಸಾಧನಗಳಲ್ಲಿ ಪ್ರವೇಶಿಸಬಹುದು."
+  "Access your account across devices with smooth UX.": "ಸರಳ UX ನೊಂದಿಗೆ ನಿಮ್ಮ ಖಾತೆಗಳಿಗೆ ಎಲ್ಲಾ ಸಾಧನಗಳಲ್ಲಿ ಪ್ರವೇಶಿಸಬಹುದು.",
+  "signUp": "ಸೈನ್ ಅಪ್ ಮಾಡಿ",
+  "alreadyHaveAccount": "ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ?"
 }

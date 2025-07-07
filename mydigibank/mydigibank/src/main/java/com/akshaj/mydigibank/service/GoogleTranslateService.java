@@ -29,7 +29,7 @@ public class GoogleTranslateService {
             String encodedText = URLEncoder.encode(text, StandardCharsets.UTF_8);
             String encodedTarget = URLEncoder.encode(targetLang, StandardCharsets.UTF_8);
 
-            // Construct URL with query params
+            // URL with query params
             String url = String.format("%s?key=%s&q=%s&target=%s&format=text", URL, apiKey, encodedText, encodedTarget);
 
             RestTemplate restTemplate = new RestTemplate();
@@ -51,6 +51,6 @@ public class GoogleTranslateService {
             System.out.println("Translation failed: " + e.getMessage());
         }
 
-        return text; // fallback original
+        return text;
     }
 }

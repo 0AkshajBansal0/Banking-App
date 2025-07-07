@@ -163,5 +163,7 @@
   "Clean UI & Filters": "Clean UI & Filters",
   "Filter transactions by type, amount and date easily.": "Filter transactions by type, amount and date easily.",
   "Fully Responsive": "Fully Responsive",
-  "Access your account across devices with smooth UX.": "Access your account across devices with smooth UX."
+  "Access your account across devices with smooth UX.": "Access your account across devices with smooth UX.",
+  "signUp": "Sign Up",
+  "alreadyHaveAccount": "Already have an account?"
 }

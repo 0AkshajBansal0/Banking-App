@@ -169,5 +169,7 @@
   "Clean UI & Filters": "साफ-सुथरा इंटरफ़ेस और फ़िल्टर",
   "Filter transactions by type, amount and date easily.": "लेन-देन को प्रकार, राशि और तिथि से आसानी से फ़िल्टर करें।",
   "Fully Responsive": "पूरी तरह उत्तरदायी",
-  "Access your account across devices with smooth UX.": "अपने खाते को किसी भी डिवाइस पर स्मूद UX के साथ एक्सेस करें।"
+  "Access your account across devices with smooth UX.": "अपने खाते को किसी भी डिवाइस पर स्मूद UX के साथ एक्सेस करें।",
+  "signUp": "साइन अप करें",
+  "alreadyHaveAccount": "पहले से खाता है?"
 }
