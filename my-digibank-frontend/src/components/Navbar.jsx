@@ -50,7 +50,6 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Navigation Links */}
         {user ? (
           <ul className="flex gap-2 items-center">
             <NavLink to="/accounts" className={link}>
