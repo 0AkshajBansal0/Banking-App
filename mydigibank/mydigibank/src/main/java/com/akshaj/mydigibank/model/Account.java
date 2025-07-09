@@ -7,6 +7,8 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "DTYPE")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

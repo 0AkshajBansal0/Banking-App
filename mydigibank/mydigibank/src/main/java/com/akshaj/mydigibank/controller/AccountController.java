@@ -34,7 +34,11 @@ public class AccountController {
     /* (POST /accounts) */
     @PostMapping
     public ResponseEntity<Account> createAccount(@Valid @RequestBody Account account,
-                                                 @RequestParam(defaultValue = "en") String lang) {
+            @RequestParam(defaultValue = "en") String lang) {
+        if (account.getAccountType() == null || account.getAccountType().isBlank()) {
+            String actualType = account.getClass().getSimpleName().replace("Account", "");
+            account.setAccountType(actualType);
+        }
         Account saved = accountService.createAccount(account);
         return ResponseEntity.ok(translateAccount(saved, lang));
     }
@@ -73,8 +77,8 @@ public class AccountController {
     /* (PUT /accounts/{id}?lang=) */
     @PutMapping("/{id}")
     public ResponseEntity<Account> updateAccount(@PathVariable String id,
-                                                 @Valid @RequestBody Account updated,
-                                                 @RequestParam(defaultValue = "en") String lang) {
+            @Valid @RequestBody Account updated,
+            @RequestParam(defaultValue = "en") String lang) {
         return accountService.updateAccount(id, updated)
                 .map(acc -> ResponseEntity.ok(translateAccount(acc, lang)))
                 .orElse(ResponseEntity.notFound().build());

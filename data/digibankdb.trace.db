@@ -1,0 +1,4 @@
+2025-07-09 22:50:05.985517+05:30 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "select * from account\000d\000a[*]select* from transaction"; SQL statement:
+select * from account
+select* from transaction [42000-232]
