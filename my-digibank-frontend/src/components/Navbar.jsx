@@ -25,10 +25,8 @@ export default function Navbar() {
 
   return (
     <nav className="bg-[#d40511] text-white shadow mb-6">
-      <div className="max-w-6xl mx-auto px-4 flex justify-between items-center h-14">
-        <div className="flex items-center gap-4">
-          {/* Optional logo */}
-          {/* <img src="/logo.png" alt="Airtel Logo" className="h-8 mr-2" /> */}
+      <div className="max-w-6xl mx-auto px-4 flex justify-between items-center h-14 flex-wrap gap-y-2">
+        <div className="flex items-center gap-x-6">
 
           <NavLink
             to="/"
@@ -37,15 +35,39 @@ export default function Navbar() {
             {t("My DigiBank")}
           </NavLink>
 
+          {user && (
+            <ul className="flex gap-2">
+              <NavLink to="/accounts" className={link}>
+                {t("Accounts")}
+              </NavLink>
+              <NavLink to="/accounts/new" className={link}>
+                {t("New Account")}
+              </NavLink>
+              <NavLink to="/account-types" className={link}>
+                {t("Account Types")}
+              </NavLink>
+            </ul>
+          )}
+        </div>
+
+        <div className="flex items-center gap-4">
           {location.pathname === "/" && (
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none text-gray-500">
-                <FaGlobeAmericas />
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-2 flex items-center text-gray-500 pointer-events-none">
+                <FaGlobeAmericas className="transition-transform group-hover:scale-110 group-hover:text-[#bb040f]" />
               </div>
+
               <select
                 value={language}
                 onChange={handleLangChange}
-                className="appearance-none bg-white text-black text-sm pl-8 pr-6 py-1 rounded-md border focus:outline-none"
+                className="appearance-none cursor-pointer bg-white text-black text-sm pl-8 pr-6 py-1 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#d40511] hover:border-[#bb040f] transition-all duration-200 ease-in-out"
+                style={{
+                  backgroundImage:
+                    "url(\"data:image/svg+xml;utf8,<svg fill='black' height='10' viewBox='0 0 24 24' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>\")",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 0.5rem center",
+                  backgroundSize: "1rem",
+                }}
               >
                 <option value="en">English</option>
                 <option value="hi">हिंदी</option>
@@ -55,19 +77,9 @@ export default function Navbar() {
               </select>
             </div>
           )}
-        </div>
 
-        {user ? (
-          <ul className="flex gap-2 items-center">
-            <NavLink to="/accounts" className={link}>
-              {t("Accounts")}
-            </NavLink>
-            <NavLink to="/accounts/new" className={link}>
-              {t("New Account")}
-            </NavLink>
-            <NavLink to="/account-types" className={link}>
-              {t("Account Types")}
-            </NavLink>
+
+          {user ? (
             <button
               onClick={() => {
                 logout();
@@ -77,17 +89,17 @@ export default function Navbar() {
             >
               <FiLogOut className="mr-1" /> {t("Logout")}
             </button>
-          </ul>
-        ) : (
-          <ul className="flex gap-2">
-            <NavLink to="/login" className={link}>
-              {t("Login")}
-            </NavLink>
-            <NavLink to="/signup" className={link}>
-              {t("Signup")}
-            </NavLink>
-          </ul>
-        )}
+          ) : (
+            <ul className="flex gap-2">
+              <NavLink to="/login" className={link}>
+                {t("Login")}
+              </NavLink>
+              <NavLink to="/signup" className={link}>
+                {t("Signup")}
+              </NavLink>
+            </ul>
+          )}
+        </div>
       </div>
     </nav>
   );
