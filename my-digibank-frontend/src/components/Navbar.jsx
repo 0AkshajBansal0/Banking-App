@@ -6,7 +6,8 @@ import { useTranslation } from "react-i18next";
 import { FiLogOut } from "react-icons/fi";
 import { FaGlobeAmericas } from "react-icons/fa";
 
-const link = "px-3 py-2 rounded-md transition hover:bg-blue-600 hover:text-white";
+const link =
+  "px-3 py-2 rounded-md transition hover:bg-[#bb040f] hover:text-white";
 
 export default function Navbar() {
   const { user, logout } = useContext(AuthContext);
@@ -23,10 +24,16 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-blue-500 text-white shadow mb-6">
+    <nav className="bg-[#d40511] text-white shadow mb-6">
       <div className="max-w-6xl mx-auto px-4 flex justify-between items-center h-14">
         <div className="flex items-center gap-4">
-          <NavLink to="/" className="font-extrabold tracking-wide text-xl">
+          {/* Optional logo */}
+          {/* <img src="/logo.png" alt="Airtel Logo" className="h-8 mr-2" /> */}
+
+          <NavLink
+            to="/"
+            className="font-extrabold tracking-wide text-xl hover:text-[#fcedf0]"
+          >
             {t("My DigiBank")}
           </NavLink>
 

@@ -39,7 +39,7 @@ export default function Signup() {
   return (
     <div className="flex justify-center items-center min-h-[calc(100vh-64px)] bg-white">
       <div className="w-full max-w-md bg-white p-6 rounded-lg shadow border">
-        <h1 className="text-2xl font-semibold text-center text-blue-800 mb-4">
+        <h1 className="text-2xl font-semibold text-center text-[#d40511] mb-4">
           {t("createAccount")}
         </h1>
 
@@ -69,7 +69,7 @@ export default function Signup() {
                 <Field
                   name="username"
                   placeholder={t("usernamePlaceholder")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#d40511]"
                 />
                 <ErrorMessage
                   name="username"
@@ -87,12 +87,12 @@ export default function Signup() {
                     type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder={t("passwordPlaceholder")}
-                    className="w-full px-3 py-2 border border-gray-300 rounded pr-14 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded pr-14 focus:outline-none focus:ring-2 focus:ring-[#d40511]"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2 top-2 text-sm text-blue-600 hover:text-blue-800"
+                    className="absolute right-2 top-2 text-sm text-[#d40511] hover:underline"
                   >
                     {showPassword ? t("hide") : t("show")}
                   </button>
@@ -113,12 +113,12 @@ export default function Signup() {
                     type={showConfirm ? "text" : "password"}
                     name="confirm"
                     placeholder={t("confirmPasswordPlaceholder")}
-                    className="w-full px-3 py-2 border border-gray-300 rounded pr-14 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded pr-14 focus:outline-none focus:ring-2 focus:ring-[#d40511]"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirm(!showConfirm)}
-                    className="absolute right-2 top-2 text-sm text-blue-600 hover:text-blue-800"
+                    className="absolute right-2 top-2 text-sm text-[#d40511] hover:underline"
                   >
                     {showConfirm ? t("hide") : t("show")}
                   </button>
@@ -133,14 +133,14 @@ export default function Signup() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
+                className="w-full bg-[#d40511] text-white py-2 rounded hover:bg-[#bb040f] transition disabled:opacity-50"
               >
                 {isSubmitting ? t("signingUp") : t("signUp")}
               </button>
 
               <p className="text-sm text-center text-gray-600">
                 {t("alreadyHaveAccount")}{" "}
-                <Link to="/login" className="text-blue-600 hover:underline">
+                <Link to="/login" className="text-[#d40511] hover:underline">
                   {t("login")}
                 </Link>
               </p>

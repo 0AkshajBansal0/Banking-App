@@ -19,6 +19,6 @@ public class DebitCreditDTO {
     private String currency; // e.g., INR, USD, etc..
 
     @NotBlank
-private String lang; // new field
+    private String lang;
 
 }

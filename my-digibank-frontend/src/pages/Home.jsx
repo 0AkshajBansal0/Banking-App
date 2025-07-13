@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-white text-center">
       {/* Hero Section */}
-      <h1 className="text-4xl md:text-5xl font-bold text-blue-800 mb-4">
+      <h1 className="text-4xl md:text-5xl font-extrabold text-[#d40511] mb-4">
         {t("Welcome to DigiBank")}
       </h1>
       <p className="text-lg text-gray-700 max-w-2xl mb-8">
@@ -26,13 +26,13 @@ export default function Home() {
       <div className="flex gap-4 mb-10 flex-wrap justify-center">
         <Link
           to="/login"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md transition shadow"
+          className="bg-[#d40511] hover:bg-[#bb040f] text-white px-6 py-3 rounded-md transition shadow"
         >
           {t("Login")}
         </Link>
         <Link
           to="/signup"
-          className="bg-gray-200 hover:bg-gray-300 text-blue-800 px-6 py-3 rounded-md transition shadow"
+          className="bg-[#fce8ec] hover:bg-[#f8d0d9] text-[#d40511] px-6 py-3 rounded-md transition shadow"
         >
           {t("Signup")}
         </Link>
@@ -45,7 +45,7 @@ export default function Home() {
             key={idx}
             className="border border-gray-200 p-6 rounded-lg shadow hover:shadow-lg transition-transform transform hover:-translate-y-1 bg-white"
           >
-            <h3 className="text-lg font-semibold text-blue-700 mb-2">{f.title}</h3>
+            <h3 className="text-lg font-semibold text-[#d40511] mb-2">{f.title}</h3>
             <p className="text-sm text-gray-600">{f.desc}</p>
           </div>
         ))}
