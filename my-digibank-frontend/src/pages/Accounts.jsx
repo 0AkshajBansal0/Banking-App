@@ -11,18 +11,30 @@ export default function Accounts() {
     type: "",
     status: "",
   });
-
-  const load = async () => {
-    const query = new URLSearchParams(
-      Object.fromEntries(Object.entries(filters).filter(([, v]) => v))
-    ).toString();
-    const res = await api.get("/accounts" + (query ? `?${query}` : ""));
-    setAccounts(res.data);
-  };
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    load();
-  }, [filters]);
+    let active = true;
+    const load = async () => {
+      const query = new URLSearchParams(
+        Object.fromEntries(Object.entries(filters).filter(([, v]) => v))
+      ).toString();
+      const res = await api.get("/accounts" + (query ? `?${query}` : ""));
+      if (active) {
+        setAccounts(res.data);
+        setError("");
+      }
+    };
+
+    load().catch((error) => {
+      console.error("Failed to load accounts", error);
+      if (active) setError(t("accountsLoadFailed"));
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [filters, t]);
 
   return (
     <div>
@@ -30,7 +42,8 @@ export default function Accounts() {
 
       <FilterBar filters={filters} setFilters={setFilters} />
 
-      {accounts.length === 0 && <p>{t("noAccountsFound")}</p>}
+      {error && <p className="text-red-600" role="alert">{error}</p>}
+      {!error && accounts.length === 0 && <p>{t("noAccountsFound")}</p>}
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {accounts.map((acc) => (

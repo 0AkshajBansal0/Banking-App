@@ -9,32 +9,48 @@ export default function AccountDetails() {
   const { t } = useTranslation();
 
   const [account, setAccount] = useState(null);
-  const [currencies, setCurrencies] = useState([]);
+  const [currencies, setCurrencies] = useState([
+    { code: "INR", name: "Indian Rupee" },
+  ]);
   const [form, setForm] = useState({ amount: "", currency: "INR", description: "" });
   const [msg, setMsg] = useState("");
-
-  const loadAccount = async () => {
-    const res = await api.get(`/accounts/${id}`);
-    setAccount(res.data);
-  };
-
-  const loadCurrencies = async () => {
-    try {
-      const url = `${import.meta.env.VITE_EXCHANGE_API_BASE}/${import.meta.env.VITE_EXCHANGE_API_KEY}/codes`;
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.result === "success") {
-        setCurrencies(data.supported_codes.map(([code, name]) => ({ code, name })));
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const [messageType, setMessageType] = useState("success");
 
   useEffect(() => {
-    loadAccount();
-    loadCurrencies();
-  }, [id]);
+    let active = true;
+    api.get(`/accounts/${id}`)
+      .then((res) => {
+        if (active) setAccount(res.data);
+      })
+      .catch((error) => {
+        console.error("Failed to load account", error);
+        if (active) setMsg(t("accountLoadFailed"));
+      });
+
+    const apiBase = import.meta.env.VITE_EXCHANGE_API_BASE;
+    const apiKey = import.meta.env.VITE_EXCHANGE_API_KEY;
+    if (apiBase && apiKey) {
+      fetch(`${apiBase}/${apiKey}/codes`)
+        .then((res) => {
+          if (!res.ok) throw new Error(`Currency API returned ${res.status}`);
+          return res.json();
+        })
+        .then((data) => {
+          if (data.result === "success" && active) {
+            setCurrencies(
+              data.supported_codes.map(([code, name]) => ({ code, name }))
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to load currencies", error);
+        });
+    }
+
+    return () => {
+      active = false;
+    };
+  }, [id, t]);
 
   const isClosed = account && account.status === "Closed";
 
@@ -45,19 +61,34 @@ export default function AccountDetails() {
     try {
       await api.post(`/accounts/${id}/${type}`, form);
       setMsg(t(`${type}Success`));
+      setMessageType("success");
       setForm({ amount: "", currency: "INR", description: "" });
-      loadAccount();
+      const res = await api.get(`/accounts/${id}`);
+      setAccount(res.data);
     } catch {
       setMsg(t(`${type}Failed`));
+      setMessageType("error");
     }
   };
 
   const closeAccount = async () => {
-    await api.delete(`/accounts/${id}`);
-    navigate("/accounts");
+    try {
+      await api.delete(`/accounts/${id}`);
+      navigate("/accounts");
+    } catch (error) {
+      console.error("Failed to close account", error);
+      setMsg(t("accountCloseFailed"));
+      setMessageType("error");
+    }
   };
 
-  if (!account) return <div className="text-center mt-10">{t("loading")}</div>;
+  if (!account) {
+    return (
+      <div className="text-center mt-10" role={msg ? "alert" : undefined}>
+        {msg || t("loading")}
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-6">
@@ -99,7 +130,14 @@ export default function AccountDetails() {
       {/* Debit / Credit */}
       <div className={`space-y-3 ${isClosed ? "opacity-50 pointer-events-none" : ""}`}>
         <h3 className="text-lg font-semibold">{t("transactTitle")}</h3>
-        {msg && <p className="text-green-600">{msg}</p>}
+        {msg && (
+          <p
+            className={messageType === "error" ? "text-red-600" : "text-green-600"}
+            role={messageType === "error" ? "alert" : "status"}
+          >
+            {msg}
+          </p>
+        )}
 
         <input
           name="amount"

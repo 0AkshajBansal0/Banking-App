@@ -165,5 +165,12 @@
   "Fully Responsive": "Fully Responsive",
   "Access your account across devices with smooth UX.": "Access your account across devices with smooth UX.",
   "signUp": "Sign Up",
-  "alreadyHaveAccount": "Already have an account?"
+  "alreadyHaveAccount": "Already have an account?",
+  "signupFailed": "Could not create your account. Please try again.",
+  "accountTypesLoadFailed": "Could not load account types. Please try again.",
+  "accountCreateFailed": "Could not create the account. Please try again.",
+  "accountLoadFailed": "Could not load this account. Please try again.",
+  "accountCloseFailed": "Could not close the account. Please try again.",
+  "accountsLoadFailed": "Could not load accounts. Please try again.",
+  "transactionsLoadFailed": "Could not load transactions. Please try again."
 }

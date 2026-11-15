@@ -1,7 +1,7 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { LanguageContext } from "../context/LanguageContext";
+import { AuthContext } from "../context/AuthContextValue";
+import { LanguageContext } from "../context/LanguageContextValue";
 import { useTranslation } from "react-i18next";
 import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
 import { FaGlobeAmericas } from "react-icons/fa";

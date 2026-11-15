@@ -38,7 +38,7 @@ export default function AccountTypes() {
             <tbody>
               {types.map((type, i) => (
                 <tr key={i}>
-                  <td className="p-3 border">{type.type}</td>
+                  <td className="p-3 border">{t(type.type.toLowerCase())}</td>
                   <td className="p-3 border">
                     {type.interestRate ? `${type.interestRate}%` : t("na")}
                   </td>

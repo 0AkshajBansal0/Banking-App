@@ -32,7 +32,7 @@ export default function AccountCard({ account }) {
       </span>
 
       {/* Balance */}
-      <p className="font-medium">₹ {account.balance.toFixed(2)}</p>
+      <p className="font-medium">₹ {account.balance.toFixed(2)}</p>
 
       {/* Status translated */}
       <p className="text-xs mt-1 text-gray-500">{t(account.status.toLowerCase())}</p>

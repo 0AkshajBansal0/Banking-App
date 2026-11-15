@@ -13,7 +13,7 @@ import Transactions from "./pages/Transactions";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AccountTypes from "./pages/AccountTypes";
 
-import { LanguageProvider } from "./context/LanguageContext";
+import { LanguageProvider } from "./context/LanguageContext.jsx";
 
 export default function App() {
   return (

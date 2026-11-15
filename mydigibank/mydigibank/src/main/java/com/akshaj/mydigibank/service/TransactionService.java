@@ -6,8 +6,10 @@ import com.akshaj.mydigibank.repository.AccountRepository;
 import com.akshaj.mydigibank.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +24,7 @@ public class TransactionService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Transactional
     public Optional<Transaction> recordTransaction(Transaction transaction) {
         if (transaction.getAmount() <= 0) return Optional.empty();
         
@@ -45,6 +48,9 @@ public class TransactionService {
 
         transaction.setTransactionId(UUID.randomUUID().toString());
         transaction.setDateOfTransaction(LocalDate.now());
+        if (transaction.getTimeOfTransaction() == null) {
+            transaction.setTimeOfTransaction(LocalTime.now());
+        }
 
         Transaction savedTransaction = transactionRepository.save(transaction);
         return Optional.of(savedTransaction);

@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContextValue";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -27,10 +27,17 @@ export default function Signup() {
   const handleSubmit = async (values, { setSubmitting, setStatus }) => {
     try {
       await signup(values.username, values.password);
-      setStatus(t("signupSuccessRedirect"));
+      setStatus({ message: t("signupSuccess"), success: true });
       setTimeout(() => navigate("/login"), 1000);
-    } catch {
-      setStatus(t("usernameExists"));
+    } catch (error) {
+      const status = error.response?.status;
+      setStatus({
+        message:
+          status === 400 || status === 409
+            ? t("usernameExists")
+            : t("signupFailed"),
+        success: false,
+      });
     } finally {
       setSubmitting(false);
     }
@@ -53,12 +60,12 @@ export default function Signup() {
               {status && (
                 <p
                   className={`text-center text-sm ${
-                    status.includes("success")
+                    status.success
                       ? "text-green-600"
                       : "text-red-600"
                   }`}
                 >
-                  {status}
+                  {status.message}
                 </p>
               )}
 

@@ -2,8 +2,6 @@ package com.akshaj.mydigibank.controller;
 
 import com.akshaj.mydigibank.model.Account;
 import com.akshaj.mydigibank.service.AccountService;
-import com.akshaj.mydigibank.service.GoogleTranslateService;
-
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,15 +20,6 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @Autowired
-    private GoogleTranslateService translateService;
-
-    private Account translateAccount(Account acc, String lang) {
-        acc.setStatus(translateService.translate(acc.getStatus(), lang));
-        acc.setAccountHolderName(translateService.translate(acc.getAccountHolderName(), lang));
-        return acc;
-    }
-
     /* (POST /accounts) */
     @PostMapping
     public ResponseEntity<Account> createAccount(@Valid @RequestBody Account account,
@@ -40,7 +29,7 @@ public class AccountController {
             account.setAccountType(actualType);
         }
         Account saved = accountService.createAccount(account);
-        return ResponseEntity.ok(translateAccount(saved, lang));
+        return ResponseEntity.ok(saved);
     }
 
     /* (GET /accounts?type=&status=&from=&to=&lang=) */
@@ -57,7 +46,6 @@ public class AccountController {
                 .filter(a -> status == null || a.getStatus().equalsIgnoreCase(status))
                 .filter(a -> from == null || !a.getDateOfCreation().isBefore(from))
                 .filter(a -> to == null || !a.getDateOfCreation().isAfter(to))
-                .map(acc -> translateAccount(acc, lang))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(result);
@@ -70,7 +58,7 @@ public class AccountController {
             @RequestParam(defaultValue = "en") String lang) {
 
         return accountService.getAccountById(id)
-                .map(acc -> ResponseEntity.ok(translateAccount(acc, lang)))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -80,7 +68,7 @@ public class AccountController {
             @Valid @RequestBody Account updated,
             @RequestParam(defaultValue = "en") String lang) {
         return accountService.updateAccount(id, updated)
-                .map(acc -> ResponseEntity.ok(translateAccount(acc, lang)))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 

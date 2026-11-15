@@ -38,16 +38,14 @@ public class AccountService {
     }
 
     public Optional<Account> updateAccount(String id, Account updatedData) {
-        return accountRepo.findById(id).map(existing -> {
-            existing.setAccountHolderName(updatedData.getAccountHolderName());
-            existing.setAccountType(updatedData.getAccountType());
-            existing.setBalance(updatedData.getBalance());
-            existing.setEmail(updatedData.getEmail());
-            existing.setPhoneNumber(updatedData.getPhoneNumber());
-            existing.setIfsc(updatedData.getIfsc());
-            existing.setStatus(updatedData.getStatus());
-            return accountRepo.save(existing);
-        });
+        return accountRepo.findById(id)
+                .filter(existing -> "Active".equalsIgnoreCase(existing.getStatus()))
+                .map(existing -> {
+                    existing.setAccountHolderName(updatedData.getAccountHolderName());
+                    existing.setEmail(updatedData.getEmail());
+                    existing.setPhoneNumber(updatedData.getPhoneNumber());
+                    return accountRepo.save(existing);
+                });
     }
 
     public List<Account> getAllAccounts() {

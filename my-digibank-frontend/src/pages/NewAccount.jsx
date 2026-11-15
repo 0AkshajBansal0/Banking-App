@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import api from "../services/api";
 
 export default function NewAccount() {
   const { t } = useTranslation();
@@ -17,6 +17,7 @@ export default function NewAccount() {
   });
   const [typeDetails, setTypeDetails] = useState({});
   const [touched, setTouched] = useState({});
+  const [error, setError] = useState("");
 
   const isValid = () => {
     return (
@@ -30,10 +31,20 @@ export default function NewAccount() {
   };
 
   useEffect(() => {
-    axios.get("http://localhost:8080/accounts/types").then((res) => {
-      setAccountTypes(res.data);
-    });
-  }, []);
+    let active = true;
+    api.get("/accounts/types")
+      .then((res) => {
+        if (active) setAccountTypes(res.data);
+      })
+      .catch((loadError) => {
+        console.error("Failed to load account types", loadError);
+        if (active) setError(t("accountTypesLoadFailed"));
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [t]);
 
   useEffect(() => {
     const type = accountTypes.find((t) => t.type === form.accountType);
@@ -48,14 +59,16 @@ export default function NewAccount() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     try {
-      await axios.post("http://localhost:8080/accounts", {
+      await api.post("/accounts", {
         ...form,
         status: "Active",
       });
       navigate("/accounts");
     } catch (err) {
       console.error(err);
+      setError(t("accountCreateFailed"));
     }
   };
 
@@ -69,6 +82,8 @@ export default function NewAccount() {
         onSubmit={handleSubmit}
         className="space-y-5 bg-white p-6 rounded shadow"
       >
+        {error && <p className="text-red-600" role="alert">{error}</p>}
+
         <div>
           <label>{t("name")}</label>
           <input
@@ -92,9 +107,9 @@ export default function NewAccount() {
             className="w-full border px-3 py-2 rounded"
           >
             <option value="">{t("select")}</option>
-            {accountTypes.map((t) => (
-              <option key={t.type} value={t.type}>
-                {t.type}
+            {accountTypes.map((accountType) => (
+              <option key={accountType.type} value={accountType.type}>
+                {t(accountType.type.toLowerCase())}
               </option>
             ))}
           </select>

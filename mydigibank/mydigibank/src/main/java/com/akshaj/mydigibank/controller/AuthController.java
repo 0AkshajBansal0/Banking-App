@@ -41,7 +41,8 @@ public class AuthController {
         boolean exists = authService.userExists(req.getUsername());
 
         if (exists)
-            return ResponseEntity.badRequest().body(translateService.translate("Username already exists", lang));
+            return ResponseEntity.status(409)
+                    .body(translateService.translate("Username already exists", lang));
 
         authService.createUser(req.getUsername(), req.getPassword());
         return ResponseEntity.ok(translateService.translate("Signup successful", lang));

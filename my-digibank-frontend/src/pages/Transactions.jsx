@@ -8,6 +8,7 @@ export default function Transactions() {
   const { t } = useTranslation();
   const { id } = useParams();
   const [rows, setRows] = useState([]);
+  const [error, setError] = useState("");
   const [filters, setFilters] = useState({
     type: "",
     minAmount: "",
@@ -34,19 +35,30 @@ export default function Transactions() {
     }
   };
 
-  const load = async () => {
-    const query = new URLSearchParams(
-      Object.fromEntries(Object.entries(filters).filter(([, v]) => v))
-    ).toString();
-    const res = await api.get(
-      `/accounts/${id}/transactions${query ? `?${query}` : ""}`
-    );
-    setRows(res.data);
-  };
-
   useEffect(() => {
-    load();
-  }, [filters]);
+    let active = true;
+    const load = async () => {
+      const query = new URLSearchParams(
+        Object.fromEntries(Object.entries(filters).filter(([, v]) => v))
+      ).toString();
+      const res = await api.get(
+        `/accounts/${id}/transactions${query ? `?${query}` : ""}`
+      );
+      if (active) {
+        setRows(res.data);
+        setError("");
+      }
+    };
+
+    load().catch((error) => {
+      console.error("Failed to load transactions", error);
+      if (active) setError(t("transactionsLoadFailed"));
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [filters, id, t]);
 
   const summary =
     filters.fromDate || filters.toDate
@@ -70,8 +82,8 @@ export default function Transactions() {
             className="w-full border px-2 py-1.5 rounded text-sm"
           >
             <option value="">{t("all")}</option>
-            <option>{t("debit")}</option>
-            <option>{t("credit")}</option>
+            <option value="Debit">{t("debit")}</option>
+            <option value="Credit">{t("credit")}</option>
           </select>
         </div>
 
@@ -154,9 +166,11 @@ export default function Transactions() {
         <p className="text-sm text-gray-600 mb-4 italic">{summary}</p>
       )}
 
+      {error && <p className="text-red-600" role="alert">{error}</p>}
+
       {/* Transaction Cards */}
       <div className="grid gap-4">
-        {rows.length === 0 && (
+        {!error && rows.length === 0 && (
           <p className="text-gray-500 italic">{t("noTransactions")}</p>
         )}
 

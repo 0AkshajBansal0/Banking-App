@@ -14,13 +14,14 @@ import java.util.Map;
 @Service
 public class GoogleTranslateService {
 
-    @Value("${google.api.key}")
+    @Value("${google.api.key:}")
     private String apiKey;
 
     private final String URL = "https://translation.googleapis.com/language/translate/v2";
 
     public String translate(String text, String targetLang) {
-        if (text == null || text.isEmpty() || targetLang.equalsIgnoreCase("en")) {
+        if (text == null || text.isEmpty() || targetLang == null
+                || targetLang.equalsIgnoreCase("en") || apiKey.isBlank()) {
             return text;
         }
 
